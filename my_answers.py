@@ -47,20 +47,21 @@ def window_transform_text(text, window_size, step_size):
     # containers for input/output pairs
     inputs = []
     outputs = []
-    series = text.split()
+    series = list(text)
     step=0
-    for i in range(len(series[:-window_size])):
-        step = step_size+i
-        inputs.append(series[step:step+window_size])
-        if step >= len(series[:-window_size]):
+    for i in range(len(series[window_size:])):
+        
+        inputs.append(''.join(series[step:step+window_size]))
+        outputs.append(series[step+window_size])
+        step = step_size + i
+        if step+window_size+1 >= len( series):
             break
-    #print(inputs)
-    #outputs = np.asarray(outputs)
-    #inputs = np.asarray(inputs)
-    print(outputs)
     return inputs,outputs
 
 # TODO build the required RNN model: 
 # a single LSTM hidden layer with softmax activation, categorical_crossentropy loss 
 def build_part2_RNN(window_size, num_chars):
-    pass
+    model = Sequential()
+    model.add(LSTM(5, input_shape=(window_size, num_chars)))
+    model.add(Dense(num_chars,activation='softmax'))
+    return model
