@@ -65,3 +65,21 @@ def build_part2_RNN(window_size, num_chars):
     model.add(LSTM(200, input_shape=(window_size, num_chars)))
     model.add(Dense(num_chars,activation='softmax'))
     return model
+
+
+
+
+# function that uses trained model to predict a desired number of future stock prices
+def predict_next_stock_points(model,previous_prices,num_to_predict):     
+    # create output
+    predicted_prices = []
+
+    for i in range(num_to_predict):
+
+        # make this round's prediction
+        test_predict = model.predict(previous_prices,verbose = 0)[0]
+        # update predicted_chars and input
+        predicted_prices.append(np.asarray(test_predict))
+        previous_prices = np.append(previous_prices,test_predict.reshape(1,1,1),axis=1)
+        previous_prices = previous_prices[:,1:,:].reshape(1,previous_prices.shape[1]-1,1)
+    return predicted_prices
