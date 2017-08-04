@@ -39,7 +39,7 @@ def cleaned_text(text):
     punctuation = ['!', ',', '.', ':', ';', '?']
     text = text.lower()
     
-    text = re.sub(r"[^a-z0-9%s]"%(''.join(punctuation)), " ", text)
+    text = re.sub(r"[^a-z%s]"%(''.join(punctuation)), " ", text)
     return text
 
 ### TODO: fill out the function below that transforms the input text and window-size into a set of input/output pairs for use with our RNN model
@@ -47,14 +47,14 @@ def window_transform_text(text, window_size, step_size):
     # containers for input/output pairs
     inputs = []
     outputs = []
-    series = list(text)
     step=0
-    for i in range(len(series[window_size:])):
-        
+    series = list(text)
+    for i in range(len(series[:-window_size])):
+
         inputs.append(''.join(series[step:step+window_size]))
         outputs.append(series[step+window_size])
-        step = step_size + i
-        if step+window_size+1 >= len( series):
+        step = step + step_size
+        if step >= len( series[:-window_size] ):
             break
     return inputs,outputs
 
